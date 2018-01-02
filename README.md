@@ -1,6 +1,6 @@
 # Herramienta Pruebas automáticas
 
-* Blog Medium: 
+* Blog Medium: https://goo.gl/qth3yR
 * Vídeo Ejecución: https://youtu.be/twBw1U78doY
 
 ![image](https://github.com/Jorger/herramienta_pruebas_atomaticas/blob/master/image.jpg?raw=true)
