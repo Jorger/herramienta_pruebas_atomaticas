@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="ADB input Monkey">
+    <meta name="author" content="Jorge Rubiano">
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+    <title>ADB input Monkey</title>
+    <link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/smartwizard/smart_wizard.min.css" rel="stylesheet">
+    <link href="/vendor/smartwizard/smart_wizard_theme_dots.min.css" rel="stylesheet">
+    <link href="/vendor/sweetalert/sweetalert.css" rel="stylesheet">
+    <style>
+        body{ margin-top:60px; }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">ADB input Monkey</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active"><a href="/">Pruebas <span class="sr-only">(current)</span></a></li>
+                <!-- <li><a href="#">Github</a></li> //-->
+                <li><a href="https://jorger.github.io/page/es/" target="_blank">Jorge Rubiano</a></li>
+            </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <!-- inicio //--> 
+    <div class="container">
+            <h1>{{test.name_test}}</h1>
+            <ol class="breadcrumb">   
+                <li class="breadcrumb-item"><a href="/">Listado de Pruebas</a></li>
+                <li class="breadcrumb-item active">{{test.name_test}}</li>
+            </ol>
+        <div id="smartwizard">
+            <ul>
+                <li><a href="#step-1">APK<br /><small>Seleccionar el APK</small></a></li>
+                <li><a href="#step-2">Configuración<br /><small>Seleccionar Dispositivo y tipos de eventos</small></a></li>
+                <li><a href="#step-3">Ejecución<br /><small>Ejecución de la prueba</small></a></li>
+                <li><a href="#step-4">Reporte<br /><small>Visualización de reporte</small></a></li>
+            </ul>
+            <div>
+                <div id="step-1" class="">
+                    <h2>Seleccionar APK</h2>
+                    <!-- Vista de progreso de subida APK //-->
+                    <div id="progreso" style="display:none;">
+                        <h3 id = "tituloSube">Subiendo APK</h3>
+                        <div class = "progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id = "progress">
+                                0%
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            Este proceso puede tomar unos segundos, por favor no cierres las ventana hasta que el proceso haya culminado.
+                        </div>
+                    </div>
+                    <!-- fin de la vista de progreso de la APK //-->
+                    <!-- inicia formulario //-->
+                    <form ref='uploadForm' id='uploadForm' action='/test/upload' method='post' encType="multipart/form-data" role="form">
+                        <div class="form-group">
+                            <div align = "center">
+                                <a href="javascript:;" class="btn btn-primary btn-lg" id = "upvideo">
+                                    <span class="glyphicon glyphicon-screenshot"></span> Subir APK
+                                </a>
+                                <input type="file" name="sampleFile" style="display: none" id = "upload" accept=".apk"/>
+                                <input type="hidden" value="{{test.token_apk}}" name="token_apk" id="token_apk"></input>
+                                <input type="hidden" value="{{test.idapk}}" name="idapk" id="idapk"></input>
+                                <h3 id = "nombreVideo">Selecciona el apk que deseas probar</h3>
+                            </div>
+                        </div>
+                    </form>	
+                    <!-- Fin dle formulario //-->
+                </div>
+                <div id="step-2">
+                    <h2>Configuración de la Prueba</h2>
+                    <hr>
+                    <form id='configTest' action='test/config' method='post'>
+                        <div class="form-group">
+                            <label for="device">Dispositivo</label>
+                            <select class="form-control" name="device" id="device" disabled="disabled">
+                                <option value="0">Cargando Dispositivos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="device">Número de eventos</label>
+                            <input type="number" class="form-control" name="number_events" id="number_events" value="100">
+                        </div>
+                        <hr>
+                        <h3>Tipos de eventos</h3>
+
+                        <!-- Inicio... //-->
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#adbinput">ADB Input</a></li>
+                            <li><a data-toggle="tab" href="#monkeytest">Monkey Testing</a></li>
+                            <li><a data-toggle="tab" href="#calabash">BDD Calabash</a></li>
+                          </ul>
+                        
+                          <div class="tab-content">
+                            <div id="adbinput" class="tab-pane fade in active">
+                                <!-- Inicio form //-->
+                                <br>
+                                <div class="form-group">
+                                    <label for="tap">Ejecutar TAP</label>
+                                    <select class="form-control" name="tap" id="tap">
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="text">Ejecutar TEXT</label>
+                                    <select class="form-control" name="text" id="text">
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="swipe">Ejecutar SWIPE</label>
+                                    <select class="form-control" id="swipe" name="swipe">
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="keyevent">Ejecutar keyevent</label>
+                                    <select class="form-control" id="keyevent" name="keyevent">
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
+                                    </select>
+                                </div>
+                                <!-- Fin form //-->
+                            </div>
+                            <div id="monkeytest" class="tab-pane fade">
+                                <!-- Inicio form //-->
+                                <br>
+                                <div class="form-group">
+                                    <label for="device">Semilla</label>
+                                    <input type="number" class="form-control" name="seed" id="seed" value="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="device">Touch</label>
+                                    <div class="input-group">
+                                        <input type="range" class="form-control" min="0" max="100" value="0" class="slider" id="monkeyTouch" key="1">
+                                        <div class="input-group-btn" style="width:10%">
+                                            <input type="text" class="form-control" value="0" id="labelmonkeyTouch" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="device">Motion</label>
+                                    <div class="input-group">
+                                        <input type="range" class="form-control" min="0" max="100" value="0" class="slider" id="monkeyMotion" key="2">
+                                        <div class="input-group-btn" style="width:10%">
+                                            <input type="text" class="form-control" value="0" id="labelmonkeyMotion" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="device">Trackball</label>
+                                    <div class="input-group">
+                                        <input type="range" class="form-control" min="0" max="100" value="0" class="slider" id="monkeyTrackball" key="3">
+                                        <div class="input-group-btn" style="width:10%">
+                                            <input type="text" class="form-control" value="0" id="labelmonkeyTrackball" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="device">Navigation</label>
+                                    <div class="input-group">
+                                        <input type="range" class="form-control" min="0" max="100" value="0" class="slider" id="monkeyNavigation" key="4">
+                                        <div class="input-group-btn" style="width:10%">
+                                            <input type="text" class="form-control" value="0" id="labelmonkeyNavigation" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="device">KeyEvents</label>
+                                    <div class="input-group">
+                                        <input type="range" class="form-control" min="0" max="100" value="0" class="slider" id="monkeyKeyEvents" key="5">
+                                        <div class="input-group-btn" style="width:10%">
+                                            <input type="text" class="form-control" value="0" id="labelmonkeyKeyEvents" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Fin form //-->
+                            </div>
+                            <!-- Inicio para calabash //-->
+                            <div id="calabash" class="tab-pane fade">
+                                <!-- Inicio form //-->
+                                <br>
+                                <h3>Sube el archivo Features!</h3>
+                                <!-- Vista de progreso de subida del archivo //-->
+                                <div id="progresoFeature" style="display:none;">
+                                    <h3 id = "tituloSube">Subiendo Archivo</h3>
+                                    <div class = "progress">
+                                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%" id = "progressFeature">
+                                            0%
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        Este proceso puede tomar unos segundos, por favor no cierres las ventana hasta que el proceso haya culminado.
+                                    </div>
+                                </div>
+                                <!-- fin de la vista de progreso de la APK //-->
+                                <!-- inicia formulario de subida//-->
+                                <div class="form-group" id="divbtnFeature">
+                                    <div align = "center">
+                                        <a href="javascript:;" class="btn btn-primary btn-lg" id="uploadFeature">
+                                            <span class="glyphicon glyphicon-screenshot"></span> Subir Archivo Feature
+                                        </a>
+                                        <h3 id="nombreFeature">Selecciona el archivo .feature para realizar la prueba</h3>
+                                    </div>
+                                </div>
+                                <!-- Fin dle formulario //-->
+                                <!-- Fin form //-->
+                            </div>
+                            <!-- Fin de Calabash //-->
+                          </div>
+                        <!-- Fin... //-->
+                    </form>
+
+                    <form ref='formFeature' id='formFeature' action='/test/uploadfeature' method='post' encType="multipart/form-data" role="form">
+                        <input type="file" name="fileFeatures" style="display: none" id="btnUploadFeature" accept=".feature"/>
+                        <input type="hidden" value="{{test.token_apk}}" name="token_apk_feature" id="token_apk_feature"></input>
+                        <input type="hidden" name="token_device" id="token_device"></input>
+                    </form>	
+
+                </div>
+                <div id="step-3" class="">
+                    <h2>Ejecución de la prueba</h2>
+                    <div id="terminal"></div>
+                </div>
+                <div id="step-4" class="">
+                    <h2>Reporte prueba</h2>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Vídeo de la prueba</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div align="center" class="embed-responsive embed-responsive-16by9">
+                                        <video width="100%" controls class="embed-responsive-item" id="videotest">
+                                            <source src="{% if test.end_test === 1%} /static/{{test.idapk}}/{{test.token_apk}}.mp4 {% endif %}" type="video/mp4">
+                                            Your browser does not support HTML5 video.
+                                        </video>
+                                    </div>
+                                </div>                                
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a href="/testlog/{{test.token_apk}}" class="btn btn-primary">Descargar Log de eventos</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <!-- fin //-->
+    <script src="/vendor/sweetalert/sweetalert.min.js"></script>
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/bootstrap.min.js"></script>  
+    <script src="/vendor/smartwizard/jquery.smartWizard.min.js"></script>
+    <script src="/js/terminal.js"></script>
+    <script src="/js/socket.io-1.2.0.min.js"></script>
+    <script src="/js/script.js"></script>
+  </body>
+</html>
